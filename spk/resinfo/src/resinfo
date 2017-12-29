@@ -1,0 +1,204 @@
+#! /usr/bin/env perl
+
+package ResInfo;
+
+use strict;
+use warnings;
+use Carp;
+use Exporter qw(import);
+
+use Sys::Hostname;
+use IO::Socket::INET;
+
+use constant RIV => "0";
+our $VERSION = RIV . ".05";
+our @EXPORT = qw(resinfo);
+
+my $data;
+
+# Primarily, the DNS should be able to point to resinfo.local .
+# The IP numbers are hard wired fallbacks.
+
+# NOTE: If you are running mDNS, it will try to resolve the .local
+# adresses first, which will cause a delay of several seconds.
+# If you cannot disable mDNS, do not use the .local address.
+
+my @servers = qw( resinfo.local 192.168.1.10 192.168.1.16 );
+
+sub resinfo {
+    my ( $query, $opts ) = @_;
+
+    $opts ||= {};
+
+    undef $data if $opts->{refresh};
+
+    my $error;
+    foreach my $srv ( @servers ) {
+
+	last if $data;
+
+	# Open a socket to the server.
+	my $sock = IO::Socket::INET->new( PeerAddr => $srv,
+					  PeerPort => 1487,
+					  Proto    => "tcp" );
+
+	$error = 'RESINFOERROR_NO_SERVER', next unless $sock;
+
+	# Verify version match.
+	<$sock> =~ /^resinfo\.version\s*[:=]\s*'?(\d+)\.(\d+)'?/;
+	$error = 'RESINFOERROR_VERSION_MISMATCH', next unless defined $1 && $1 eq RIV;
+
+	$data = do { local $/; <$sock> };
+
+	if ( $data ) {
+	    $data .= "\nresinfo.server: $srv\n";
+	    undef $error;
+	}
+    }
+
+    return $error if $error;
+
+    my $hostname = hostname();
+    $hostname =~ s/\./_/g;
+    my $info;
+    if ( $data =~ /^\Q$hostname\E\.\Q$query\E\s*[:=]\s*(.*)/m ) {
+	$info = $1;
+    }
+    elsif ( $data =~ /^\Q$query\E\s*[:=]\s*(.*)/m ) {
+	$info = $1;
+    }
+    else {
+	return 'RESINFOERROR_KEY_NOT_FOUND';
+    }
+
+    $info =~ s/\s+\Z//;
+    $info = $1 if $info =~ /^'(.*)'$/;
+
+    if ( my $pw = $opts->{password} ) {
+	$info = decrypt( $info, $pw );
+	return 'RESINFOERROR_WRONG_PASSWORD' unless defined $info
+    }
+
+    return $info;
+
+}
+
+################ Decryption ################
+
+sub decrypt {
+    my ( $encryp_base64, $priv ) = @_;
+
+    require MIME::Base64;
+    require Digest::MD5;
+
+    my $bin_priv = atob($priv);
+
+    my $base64toplain = MIME::Base64::decode($encryp_base64);
+
+    my $encryp_pack = "";
+    for ( my $i = 0; $i < length($base64toplain); $i++ ) {
+	my $elem = substr( $base64toplain, $i, 1 );
+	my $bin  = unpack('B8', $elem);
+	$encryp_pack .= $bin;
+    }
+
+    my $bin_new = bin_add( $encryp_pack, $bin_priv, $priv );
+
+    $encryp_pack = "";
+    for ( my $i = 0; $i < length($bin_new); $i += 8 ) {
+	my $elem = substr( $bin_new, $i, 8 );
+	$encryp_pack .= pack('B8', $elem);
+    }
+
+    my ( $rand1, $result, $priv_wrapped ) = split( /\t/, $encryp_pack );
+
+    my $priv_md5 = Digest::MD5::md5_hex($priv);
+
+    return if $rand1 =~ /\D/;
+    return unless $priv_md5 eq $priv_wrapped;
+
+    return $result;
+}
+
+################ Helper routines ################
+
+sub atob($) {
+    my ( $str ) = @_;
+    my $bin = "";
+    for ( my $i = 0; $i < length($str); $i++ ) {
+	$bin .= unpack( 'B8', substr( $str, $i, 1 ) );
+    }
+    return $bin;
+}
+
+sub bin_add($$$) {
+    my ( $a, $b, $priv ) = @_;
+
+    my $i = 0;
+    for ( my $j = 0; $j < length($a); $j++ ) {
+	substr( $a, $j, 1 ) += substr( $b, $i, 1 );
+	substr( $a, $j, 1 ) = 0 if substr( $a, $j, 1 ) == 2;
+	$i = 0 if ++$i > length($priv);
+    }
+    return $a;
+}
+
+################ Testing 1 2 3 ################
+
+unless ( caller ) {
+
+    package main;
+    my $opts = {};
+    foreach ( @ARGV ) {
+	$opts->{password} = $1, next if /^--password=(.*)/;
+	print ResInfo::resinfo( $_, $opts ), "\n";
+    }
+}
+
+=head1 IMPLEMENTATION
+
+The information resides on the server in a simple text file,
+/etc/local/resinfo.dat:
+
+  RESINFO VERSION: 0.1
+  # Version indicator must be the first line.
+
+  # Media.
+  media.video.root: /volume1/Storage0/Video
+  media.audio.root: /volume1/Storage0/Audio
+
+  # Databases.
+  db.recinfo.dbi: dbi:Pg:dbname=recinfo;host=nas1.squirrel.nl;port=5434
+  db.recinfo.cli: -h nas1.squirrel.nl -p 5434 recinfo
+
+The server runs the xinetd daemon with the following service
+(/etc/xinetd.d/resinfo):
+
+  service resinfo
+  {
+	  type            = unlisted
+	  disable         = no
+	  flags           = IPv4
+	  socket_type     = stream
+	  wait            = no
+	  user            = nobody
+	  server          = /bin/cat
+	  server_args     = /etc/local/resinfo.dat
+	  port            = 1487
+	  log_on_failure  += USERID
+  }
+
+=head1 LICENSE
+
+Copyright (C) 2013, Johan Vromans,
+
+This module is free software. You can redistribute it and/or
+modify it under the terms of the Artistic License 2.0.
+
+This program is distributed in the hope that it will be useful,
+but without any warranty; without even the implied warranty of
+merchantability or fitness for a particular purpose.
+
+=cut
+
+1;
