@@ -1,17 +1,17 @@
 SPK_NAME = owncloud
-SPK_VERS = 8.1.12
-SPK_REV = 8
+SPK_VERS = 10.0.3
+SPK_REV = 24
 SPK_ICON = src/owncloud.png
 DSM_UI_DIR = app
 
 DEPENDS  = cross/busybox cross/$(SPK_NAME)
 
-MAINTAINER = ymartin59
+MAINTAINER = Johan Vromans
 DESCRIPTION = ownCloud is a personal cloud which runs on your own server and gives you freedom and control over your own data.
 ADMIN_URL = /owncloud/
 RELOAD_UI = yes
 DISPLAY_NAME = ownCloud
-CHANGELOG = "1. Update ownCloud to 8.1.12"
+CHANGELOG = "Update ownCloud to 10.0.3"
 
 HOMEPAGE   = http://owncloud.org/
 LICENSE    = AGPL
