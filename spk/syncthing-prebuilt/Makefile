@@ -4,7 +4,7 @@ SPK_REV = 14
 SPK_ICON = src/syncthing.png
 DSM_UI_DIR = app
 
-DEPENDS = cross/syncthing-prebuilt
+DEPENDS = cross/busybox cross/syncthing-prebuilt
 
 UNSUPPORTED_ARCHS = $(PPC_ARCHES)
 
@@ -23,6 +23,9 @@ SSS_SCRIPT       = src/dsm-control.sh
 FWPORTS          = src/${SPK_NAME}.sc
 CONF_DIR         = src/conf/
 WIZARDS_DIR      = wizard/
+
+BUSYBOX_CONFIG = daemon nice
+ENV += BUSYBOX_CONFIG="$(BUSYBOX_CONFIG)"
 
 INSTALL_PREFIX = /usr/local/$(SPK_NAME)
 
