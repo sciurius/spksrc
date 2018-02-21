@@ -3,6 +3,7 @@
 # Package
 PACKAGE="owncloud"
 DNAME="ownCloud"
+SSS="/var/packages/${PACKAGE}/scripts/start-stop-status"
 PACKAGE_NAME="com.synocommunity.packages.${PACKAGE}"
 
 # Others
