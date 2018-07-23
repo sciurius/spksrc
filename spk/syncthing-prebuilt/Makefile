@@ -1,6 +1,6 @@
 SPK_NAME = syncthing
-SPK_VERS = 0.14.42
-SPK_REV = 14
+SPK_VERS = 0.14.48
+SPK_REV = 15
 SPK_ICON = src/syncthing.png
 DSM_UI_DIR = app
 
@@ -14,7 +14,7 @@ DESCRIPTION_FRE = Synchronisation automatique de fichiers via une technologie s√
 ADMIN_PORT = 7070
 RELOAD_UI = yes
 DISPLAY_NAME = Syncthing
-CHANGELOG = "Upgrade to 0.14.42"
+CHANGELOG = "Upgrade to 0.14.48"
 HOMEPAGE = http://www.syncthing.net
 LICENSE = MPLv2.0
 
