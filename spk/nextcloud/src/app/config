@@ -1,0 +1,15 @@
+{
+    ".url": {
+        "com.synocommunity.packages.nextcloud": {
+            "title": "nextCloud",
+            "desc": "nextCloud",
+            "icon": "images/nextcloud-{0}.png",
+            "type": "url",
+            "protocol": "http",
+            "port": "80",
+            "url": "/nextcloud",
+            "allUsers": true,
+            "grantPrivilege": "local"
+        }
+    }
+}
