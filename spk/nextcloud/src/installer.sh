@@ -2,7 +2,7 @@
 
 # Package
 PACKAGE="nextcloud"
-DNAME="nextCloud"
+DNAME="Nextcloud"
 SSS="/var/packages/${PACKAGE}/scripts/start-stop-status"
 PACKAGE_NAME="com.synocommunity.packages.${PACKAGE}"
 

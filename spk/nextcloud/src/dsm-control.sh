@@ -2,7 +2,7 @@
 
 # Package
 PACKAGE="nextcloud"
-DNAME="nextCloud"
+DNAME="Nextcloud"
 
 # Others
 INSTALL_DIR="/usr/local/${PACKAGE}"

@@ -1,5 +1,5 @@
 [{
-    "step_title": "Configuration de la base de donnée d'nextCloud",
+    "step_title": "Configuration de la base de donnée de Nextcloud",
     "items": [{
         "type": "password",
         "desc": "Saisissez votre mot de passe MySQL.",
@@ -12,11 +12,11 @@
         "desc": "Un utilisateur et une base de donnée MySQL 'nextcloud' vont être créés. Saisissez un mot de passe pour l'utilisateur 'nextcloud'.",
         "subitems": [{
             "key": "wizard_mysql_password_nextcloud",
-            "desc": "Mot de passe nextCloud"
+            "desc": "Mot de passe Nextcloud"
         }]
     }]
 }, {
-    "step_title": "Configuration de l'administrateur d'nextCloud",
+    "step_title": "Configuration de l'administrateur de Nextcloud",
     "items": [{
         "type": "textfield",
         "desc": "Nom d'utilisateur de l'administrateur. admin par défaut",
@@ -41,7 +41,7 @@
         }]
     }, {
         "type": "textfield",
-        "desc": "Répertoire de données d'nextCloud",
+        "desc": "Répertoire de données de Nextcloud",
         "subitems": [{
             "key": "wizard_nextcloud_datadirectory",
             "desc": "Répertoire",

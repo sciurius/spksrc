@@ -1,5 +1,5 @@
 [{
-    "step_title": "nextCloud database configuration",
+    "step_title": "Nextcloud database configuration",
     "items": [{
         "type": "password",
         "desc": "Enter your MySQL password.",
@@ -16,7 +16,7 @@
         }]
     }]
 }, {
-    "step_title": "nextCloud admin configuration",
+    "step_title": "Nextcloud admin configuration",
     "items": [{
         "type": "textfield",
         "desc": "Administrator's login. Defaults to admin",
@@ -41,7 +41,7 @@
         }]
     }, {
         "type": "textfield",
-        "desc": "nextCloud data directory",
+        "desc": "Nextcloud data directory",
         "subitems": [{
             "key": "wizard_nextcloud_datadirectory",
             "desc": "Directory",

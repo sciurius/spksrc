@@ -1,8 +1,8 @@
 {
     ".url": {
         "com.synocommunity.packages.nextcloud": {
-            "title": "nextCloud",
-            "desc": "nextCloud",
+            "title": "Nextcloud",
+            "desc": "Nextcloud",
             "icon": "images/nextcloud-{0}.png",
             "type": "url",
             "protocol": "http",

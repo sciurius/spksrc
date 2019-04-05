@@ -1,17 +1,17 @@
 SPK_NAME = nextcloud
-SPK_VERS = 15.0.5
-SPK_REV = 15
+SPK_VERS = 15.0.6
+SPK_REV = 16
 SPK_ICON = src/nextcloud.png
 DSM_UI_DIR = app
 
 DEPENDS  = cross/busybox cross/$(SPK_NAME)
 
-MAINTAINER = ymartin59
+MAINTAINER = jvromans
 DESCRIPTION = nextCloud is a personal cloud which runs on your own server and gives you freedom and control over your own data.
 ADMIN_URL = /nextcloud/
 RELOAD_UI = yes
 DISPLAY_NAME = nextCloud
-CHANGELOG = "1. Update nextCloud to 15.0.5"
+CHANGELOG = "1. Update nextCloud to 15.0.6"
 
 HOMEPAGE   = http://nextcloud.org/
 LICENSE    = AGPL
