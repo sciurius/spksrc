@@ -1,6 +1,6 @@
 SPK_NAME = nextcloud
-SPK_VERS = 15.0.6
-SPK_REV = 16
+SPK_VERS = 15.0.7
+SPK_REV = 17
 SPK_ICON = src/nextcloud.png
 DSM_UI_DIR = app
 
@@ -11,9 +11,9 @@ DESCRIPTION = nextCloud is a personal cloud which runs on your own server and gi
 ADMIN_URL = /nextcloud/
 RELOAD_UI = yes
 DISPLAY_NAME = nextCloud
-CHANGELOG = "1. Update nextCloud to 15.0.6"
+CHANGELOG = "1. Update nextCloud to 15.0.7"
 
-HOMEPAGE   = http://nextcloud.org/
+HOMEPAGE   = https://nextcloud.org/
 LICENSE    = AGPL
 
 REQUIRED_DSM = 6.0
