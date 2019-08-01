@@ -19,3 +19,6 @@ LICENSE     = GPLv2
 INSTALLER_SCRIPT = src/install.sh
 
 include ../../mk/spksrc.spk.mk
+
+realclean : clean
+	rm -f *~ */*~
