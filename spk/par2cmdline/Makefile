@@ -1,6 +1,6 @@
 SPK_NAME = par2cmdline
 SPK_VERS = 0.8.0
-SPK_REV = 2
+SPK_REV = 3
 SPK_ICON = src/par2cmdline.png
 
 DEPENDS = cross/$(SPK_NAME)
@@ -16,6 +16,6 @@ CHANGELOG   = "Upgrade to 0.8.0"
 HOMEPAGE    = https://github.com/parchive/par2cmdline
 LICENSE     = GPLv2
 
-SERVICE_SETUP = src/service-setup.sh
+INSTALLER_SCRIPT = src/install.sh
 
 include ../../mk/spksrc.spk.mk
