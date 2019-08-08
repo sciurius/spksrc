@@ -1,17 +1,18 @@
 SPK_NAME = dnscrypt-proxy
-SPK_VERS = 2.0.15
+SPK_VERS = 2.0.19
 SPK_REV = 0
 SPK_ICON = src/dnscrypt-proxy.png
 
 DEPENDS = cross/$(SPK_NAME)
 SPK_CONFLICT = DNSServer
+UNSUPPORTED_ARCHES = $(PPC_ARCHES)
 
 MAINTAINER = publicarray
-DESCRIPTION = A flexible DNS proxy, with support for modern encrypted DNS protocols such as DNSCrypt v2 and DNS-over-HTTP/2. https://github.com/jedisct1/dnscrypt-proxy
-DISPLAY_NAME = DNSCrypt-proxy
+DESCRIPTION = A flexible DNS proxy, with support for modern encrypted DNS protocols such as DNSCrypt v2 and DNS-over-HTTPS. https://github.com/jedisct1/dnscrypt-proxy
+DISPLAY_NAME = dnscrypt-proxy
 HELPURL = https://github.com/jedisct1/dnscrypt-proxy/wiki
 LICENSE = ISC
-CHANGELOG = "Added a GUI"
+CHANGELOG = "Update to 2.0.19"
 
 STARTABLE = yes
 BETA = 1
@@ -34,41 +35,44 @@ PRE_COPY_TARGET = dnscrypt_extra_install
 include ../../mk/spksrc.spk.mk
 
 ifeq ($(findstring $(ARCH),$(ARM5_ARCHES)),$(ARCH))
-DNSCRYPT_ARCH = arm
-export GOARM=5
+GO_ARCH = arm
+ENV += GOARM=5
 endif
 ifeq ($(findstring $(ARCH),$(ARM7_ARCHES)),$(ARCH))
-DNSCRYPT_ARCH = arm
-export GOARM=7
+GO_ARCH = arm
+ENV += GOARM=7
 endif
 ifeq ($(findstring $(ARCH),$(ARM8_ARCHES)),$(ARCH))
-DNSCRYPT_ARCH = arm64
+GO_ARCH = arm64
 endif
 ifeq ($(findstring $(ARCH),$(x86_ARCHES)),$(ARCH))
-DNSCRYPT_ARCH = 386
+GO_ARCH = 386
 endif
 ifeq ($(findstring $(ARCH),$(x64_ARCHES)),$(ARCH))
-DNSCRYPT_ARCH = amd64
+GO_ARCH = amd64
 endif
-ifeq ($(findstring $(ARCH),$(PPC_ARCHES)),$(ARCH))
-DNSCRYPT_ARCH = ppc64
-endif
-ifeq ($(DNSCRYPT_ARCH),)
+# Go has no ppc32 support for qoriq https://github.com/golang/go/issues/22885
+#ifeq ($(findstring $(ARCH),$(PPC_ARCHES)),$(ARCH))
+#GO_ARCH = ppc32
+#endif
+ifeq ($(GO_ARCH),)
 $(error Unsupported ARCH $(ARCH))
 endif
 
-export GOPATH = $(WORK_DIR)
-export PATH := $(WORK_DIR)/../../../native/go/work-native/go/bin/:$(WORK_DIR)/bin:$(PATH)
-export GOOS = linux
-export GOARCH = $(DNSCRYPT_ARCH)
-export CGO_ENABLED=0
+CONF_ARGS = -ldflags="-s -w"
+ENV += GOPATH="$(WORK_DIR)" \
+	GOOS=linux \
+	GOARCH="$(GO_ARCH)" \
+	CGO_ENABLED=0 \
+	PATH=$(WORK_DIR)/../../../native/go/work-native/go/bin/:$$PATH
 
 .PHONY: dnscrypt_extra_install
 dnscrypt_extra_install: copy_msg
+	@echo "===> Copying files"
+	mkdir -p $(STAGING_DIR)/offline-cache/
+	cp -rf $(CURDIR)/src/offline-cache/* $(STAGING_DIR)/offline-cache/
 	@echo "===> UI - Copying files"
 	mkdir -p $(STAGING_DIR)/$(DSM_UI_DIR)/
 	cp -rf $(CURDIR)/src/$(DSM_UI_DIR)/* $(STAGING_DIR)/$(DSM_UI_DIR)/
 	@echo "===> UI - Compiling cgi"
-	go build -ldflags "-s -w" -o $(STAGING_DIR)/$(DSM_UI_DIR)/index.cgi $(CURDIR)/src/$(DSM_UI_DIR)/cgi.go
-## rm -f work-ipq806x-1.1/.copy_done && rm -f work-ipq806x-1.1/.icon_done && make arch-ipq806x-1.1
-## synopkg uninstall dnscrypt-proxy
+	env $(ENV) go build $(CONF_ARGS) -o $(STAGING_DIR)/$(DSM_UI_DIR)/index.cgi $(CURDIR)/src/$(DSM_UI_DIR)/cgi.go
