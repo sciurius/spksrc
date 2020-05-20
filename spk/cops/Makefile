@@ -1,6 +1,6 @@
 SPK_NAME = cops
-SPK_VERS = 1.0.1
-SPK_REV = 5
+SPK_VERS = 1.1.3
+SPK_REV = 6
 SPK_ICON = src/cops.png
 DSM_UI_DIR = app
 
@@ -12,9 +12,7 @@ DESCRIPTION_FRE = Calibre OPDS et HTML PHP Serveur : alternative légère au ser
 ADMIN_URL = /cops/
 RELOAD_UI = yes
 DISPLAY_NAME = COPS
-CHANGELOG = "1. Update to 1.0.1<br>2. Improved DSM6 compatibility"
-
-BETA=1
+CHANGELOG = "1. Update to 1.1.3<br>2. Use PHP 7.3"
 
 HOMEPAGE   = http://blog.slucas.fr/en/oss/calibre-opds-php-server
 LICENSE    = GPL
